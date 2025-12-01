@@ -25,6 +25,11 @@ public record UserPrincipal(Long id, String email, String password) implements U
     }
 
     @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
     public boolean isAccountNonExpired() {
         return true;
     }
