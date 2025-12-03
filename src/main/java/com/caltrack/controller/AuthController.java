@@ -24,8 +24,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class AuthController {
 
     private final UserService userService;
-    private final AuthenticationManager authenticationManager;
-    private final SecurityContextRepository securityContextRepository;
+        private final AuthenticationManager authenticationManager;
+        private final SecurityContextRepository securityContextRepository;
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@Valid @RequestBody RegisterRequest request) {
@@ -42,7 +42,6 @@ public class AuthController {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        
         // Save authentication to session
         securityContextRepository.saveContext(SecurityContextHolder.getContext(), servletRequest, null);
 
