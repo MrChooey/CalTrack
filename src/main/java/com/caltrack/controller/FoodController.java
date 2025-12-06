@@ -19,7 +19,12 @@ public class FoodController {
     private final FoodService foodService;
 
     @GetMapping
-    public List<FoodResponse> list(@AuthenticationPrincipal UserPrincipal principal) {
+    public List<FoodResponse> list(@AuthenticationPrincipal UserPrincipal principal,
+                                   @RequestParam(required = false) Double minCalories,
+                                   @RequestParam(required = false) Double maxCalories) {
+        if (minCalories != null || maxCalories != null) {
+            return foodService.listFoodsWithFilters(principal.id(), minCalories, maxCalories);
+        }
         return foodService.listFoods(principal.id());
     }
 

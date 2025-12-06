@@ -88,8 +88,18 @@ export const userApi = {
 
 // Food API
 export const foodApi = {
-	getFoods: async (): Promise<FoodResponse[]> => {
-		const response = await api.get<FoodResponse[]>("/foods");
+	getFoods: async (filters?: {
+		minCalories?: number;
+		maxCalories?: number;
+	}): Promise<FoodResponse[]> => {
+		const params: Record<string, number> = {};
+		if (filters?.minCalories !== undefined) {
+			params.minCalories = filters.minCalories;
+		}
+		if (filters?.maxCalories !== undefined) {
+			params.maxCalories = filters.maxCalories;
+		}
+		const response = await api.get<FoodResponse[]>("/foods", { params });
 		return response.data;
 	},
 

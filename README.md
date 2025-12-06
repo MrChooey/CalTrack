@@ -1,54 +1,78 @@
 # CalTrack
 
-Modern calorie tracking backend built with Spring Boot, Spring Security, and MySQL. The service exposes JSON-first REST APIs that will power a future React frontend.
+Full-stack calorie tracking application with Spring Boot backend and React frontend.
 
-## Tech stack
+## Tech Stack
 
+**Backend:**
 - Java 17, Spring Boot 3.4
 - Spring MVC, Service, Repository layers
-- Spring Data JPA + MySQL (Hibernate)
+- Spring Data JPA + H2 Database (Hibernate)
 - Spring Security with session-based auth (BCrypt)
 - Gradle build tool
 
-## Getting started
+**Frontend:**
+- React 18 with TypeScript
+- Vite for build tooling
+- Tailwind CSS for styling
+- Axios for API communication
 
-1. **Prerequisites**
-   - JDK 17+
-   - MySQL (or use the included H2 examples for local/dev)
+## Features
 
-2. **Configuration (updated)**
-   - Production / default: the application now uses environment-variable-driven datasource configuration by default. You can override these environment variables or set them in `application.properties`:
+1. **User Authentication** - Session-based login/register with Spring Security
+2. **Data Entry & Storage** - Create, update, and delete food items with calorie information
+3. **Reporting & Analytics** - Daily and weekly calorie consumption summaries
+4. **Filter Functionality** - Filter foods by calorie range (min/max)
+5. **Multimedia Integration** - Add food images via URL to food entries
 
-     ```powershell
-     $env:CALTRACK_DB_URL = "jdbc:mysql://localhost:3306/caltrack?createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC"
-     $env:CALTRACK_DB_USERNAME = "root"
-     $env:CALTRACK_DB_PASSWORD = "password"
-     ```
+## Getting Started
 
-   - Local / development: an H2 file-based datasource is provided as an example in `src/main/resources/application.properties`. To use it locally, uncomment the H2 settings (they are commented by default). Example:
+### Prerequisites
+- JDK 17+
+- Node.js 16+ and npm
 
-     ```properties
-     spring.datasource.url=jdbc:h2:file:./data/caltrack
-     spring.datasource.driverClassName=org.h2.Driver
-     spring.datasource.username=sa
-     spring.datasource.password=
-     spring.h2.console.enabled=true
-     ```
+### Backend Setup
 
-   - Tests: the test resources use an in-memory H2 database (`src/test/resources/application.properties`) so unit/integration tests run without a MySQL instance.
+1. **Configuration**
+   - The application uses an H2 file-based database by default (configured in `src/main/resources/application.properties`). The database file is stored in `./data/caltrack` and is created automatically on first run.
+   - H2 console is enabled for database inspection at `http://localhost:8080/h2-console` (use JDBC URL: `jdbc:h2:file:./data/caltrack`)
+   - Tests use an in-memory H2 database (`src/test/resources/application.properties`) for isolated test execution.
 
-3. **Run the app**
+2. **Run the backend**
 
    ```powershell
    ./gradlew.bat bootRun
    ```
 
-4. **Build & tests**
+   Backend will start on `http://localhost:8080`
+
+3. **Build & tests**
 
    ```powershell
    ./gradlew.bat build
    ./gradlew.bat test
    ```
+
+### Frontend Setup
+
+1. **Install dependencies**
+
+   ```powershell
+   cd frontend
+   npm install
+   ```
+
+2. **Run the frontend**
+
+   ```powershell
+   npm run dev
+   ```
+
+   Frontend will start on `http://localhost:5173`
+
+3. **Access the app**
+
+   Open your browser to `http://localhost:5173`
 
 ## REST API
 
@@ -59,8 +83,8 @@ Modern calorie tracking backend built with Spring Boot, Spring Security, and MyS
 | `/auth/logout` | POST | Invalidate current session. |
 | `/users/profile` | GET | Retrieve current profile. |
 | `/users/profile` | PUT | Update profile (name, age, height, weight, activities). |
-| `/foods` | GET | List foods saved by the user. |
-| `/foods` | POST | Add a food entry with calories per serving. |
+| `/foods` | GET | List foods saved by the user. Supports `minCalories` and `maxCalories` query params for filtering. |
+| `/foods` | POST | Add a food entry with calories per serving and optional image URL. |
 | `/foods/{id}` | PUT | Update an existing food entry. |
 | `/foods/{id}` | DELETE | Remove a food entry. |
 | `/goals` | GET | Fetch daily/weekly calorie goals. |
@@ -69,18 +93,27 @@ Modern calorie tracking backend built with Spring Boot, Spring Security, and MyS
 | `/consumption/daily` | GET | Daily calorie totals + goal progress (optional `date`). |
 | `/consumption/weekly` | GET | Weekly totals + goal progress (optional `weekStart`). |
 
-All successful responses are JSON, ready for integration with a frontend client.
+## Architecture & OOP Principles
 
-## Security & Sessions (important changes)
+The codebase demonstrates core object-oriented programming principles:
 
-- The application uses session-backed authentication managed by Spring Security. The security configuration wires a `HttpSessionSecurityContextRepository` so the `SecurityContext` is stored in the user's HTTP session.
-- The `/auth/login` endpoint authenticates the user and the application persists the security context into the HTTP session so subsequent requests from the same session are authenticated.
-- `CSRF` has been disabled in the default security configuration (use care when exposing the app to untrusted clients or browsers). CORS is enabled with permissive defaults for development; tighten these for production.
+- **Encapsulation**: Domain models (`User`, `Food`, `Goal`, `Consumption`) use private fields with Lombok-generated getters/setters, controlling access to internal state.
+- **Inheritance**: Repositories extend Spring Data JPA's `JpaRepository` interface; custom exceptions extend `RuntimeException`.
+- **Polymorphism**: Spring dependency injection uses interface-based beans (e.g., `JpaRepository` implementations); `UserPrincipal` implements `UserDetails` for polymorphic security integration.
+- **Abstraction**: Service layer abstracts business logic from controllers; repository interfaces abstract persistence from services.
 
-## Recent merge resolution
+## Security & Sessions
 
-- Merge conflicts were resolved to keep an environment-variable-driven MySQL datasource as the default production config and to preserve an H2 example for local/dev usage.
-- Security-related conflicts were resolved in favor of session-backed security using a `SecurityContextRepository`, and the login controller persists the `SecurityContext` to the session on successful login.
-- Commit: `05c2d0c` (fix(merge): resolve conflicts for datasource and security session)
+- The application uses session-backed authentication managed by Spring Security.
+- The security configuration uses `HttpSessionSecurityContextRepository` to store the `SecurityContext` in the user's HTTP session.
+- The `/auth/login` endpoint authenticates the user and persists the security context into the HTTP session.
+- CSRF is disabled in the default security configuration. CORS is enabled with permissive defaults for development.
 
-If you'd like I can push these docs changes to the remote, run the build, or open a PR with the updates.
+## Database
+
+- H2 embedded database (file-based for persistence)
+- Database file location: `./data/caltrack.mv.db`
+- H2 console available at: `http://localhost:8080/h2-console`
+  - JDBC URL: `jdbc:h2:file:./data/caltrack`
+  - Username: `sa`
+  - Password: (leave blank)

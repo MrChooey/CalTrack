@@ -22,6 +22,9 @@ public class Food {
     @Column(nullable = false)
     private Double caloriesPerServing;
 
+    @Column(length = 1024)
+    private String imageUrl;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id")
     private User user;

@@ -26,12 +26,20 @@ public class FoodService {
                 .toList();
     }
 
+    public List<FoodResponse> listFoodsWithFilters(Long userId, Double minCalories, Double maxCalories) {
+        return foodRepository.findByUserIdWithFilters(userId, minCalories, maxCalories)
+                .stream()
+                .map(this::toResponse)
+                .toList();
+    }
+
     @Transactional
     public FoodResponse createFood(Long userId, FoodRequest request) {
         User user = userService.getUser(userId);
         Food food = Food.builder()
                 .foodName(request.getFoodName())
                 .caloriesPerServing(request.getCaloriesPerServing())
+                .imageUrl(request.getImageUrl())
                 .user(user)
                 .build();
         return toResponse(foodRepository.save(food));
@@ -42,6 +50,7 @@ public class FoodService {
         Food food = getFoodForUser(userId, foodId);
         food.setFoodName(request.getFoodName());
         food.setCaloriesPerServing(request.getCaloriesPerServing());
+        food.setImageUrl(request.getImageUrl());
         return toResponse(foodRepository.save(food));
     }
 
@@ -61,6 +70,7 @@ public class FoodService {
                 .id(food.getId())
                 .foodName(food.getFoodName())
                 .caloriesPerServing(food.getCaloriesPerServing())
+                .imageUrl(food.getImageUrl())
                 .build();
     }
 }

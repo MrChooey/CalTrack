@@ -9,5 +9,6 @@ public class FoodResponse {
     Long id;
     String foodName;
     Double caloriesPerServing;
+    String imageUrl;
 }
 

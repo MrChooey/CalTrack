@@ -12,5 +12,7 @@ public class FoodRequest {
 
     @Positive
     private Double caloriesPerServing;
+
+    private String imageUrl;
 }
 
