@@ -18,20 +18,31 @@ export const FoodItem = ({ food, onEdit, onDelete }: FoodItemProps) => {
 								alt={food.foodName}
 								className="h-full w-full rounded-md object-cover"
 								onError={(e) => {
-									console.error(`Failed to load image: ${food.imageUrl}`);
+									console.error(
+										`Failed to load image: ${food.imageUrl}`
+									);
 									const target = e.target as HTMLImageElement;
 									target.style.display = "none";
 									// Show placeholder on error
 									const parent = target.parentElement;
-									if (parent && !parent.querySelector('.error-placeholder')) {
-										const placeholder = document.createElement("div");
-										placeholder.className = "error-placeholder h-full w-full rounded-md bg-gray-200 flex items-center justify-center text-gray-400 text-xs";
+									if (
+										parent &&
+										!parent.querySelector(
+											".error-placeholder"
+										)
+									) {
+										const placeholder =
+											document.createElement("div");
+										placeholder.className =
+											"error-placeholder h-full w-full rounded-md bg-gray-200 flex items-center justify-center text-gray-400 text-xs";
 										placeholder.innerHTML = "❌";
 										parent.appendChild(placeholder);
 									}
 								}}
 								onLoad={() => {
-									console.log(`✅ Image loaded: ${food.imageUrl}`);
+									console.log(
+										`✅ Image loaded: ${food.imageUrl}`
+									);
 								}}
 							/>
 						</div>

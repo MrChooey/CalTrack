@@ -5,6 +5,7 @@ Full-stack calorie tracking application with Spring Boot backend and React front
 ## Tech Stack
 
 **Backend:**
+
 - Java 17, Spring Boot 3.4
 - Spring MVC, Service, Repository layers
 - Spring Data JPA + H2 Database (Hibernate)
@@ -12,6 +13,7 @@ Full-stack calorie tracking application with Spring Boot backend and React front
 - Gradle build tool
 
 **Frontend:**
+
 - React 18 with TypeScript
 - Vite for build tooling
 - Tailwind CSS for styling
@@ -28,6 +30,7 @@ Full-stack calorie tracking application with Spring Boot backend and React front
 ## Getting Started
 
 ### Prerequisites
+
 - JDK 17+
 - Node.js 16+ and npm
 
